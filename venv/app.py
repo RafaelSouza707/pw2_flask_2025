@@ -30,7 +30,8 @@ def getUsuarios():
 
 @app.get("/usuarios/<int:id>")
 def getUsuariosById(id: int):
-    if id < 0 or id >= len(usuarios):
+    user = next((u for u in usuarios if u.id == id), None)
+    if user is None:
         return jsonify({"erro": "Usuário não encontrado."}), 404
     listUsersById = usuarios[id].to_json_user()
     return jsonify(listUsersById), 200
@@ -38,11 +39,11 @@ def getUsuariosById(id: int):
 
 @app.put("/usuarios/<int:id>")
 def putUsersById(id: int):
-    if id < 0 or id >= len(usuarios):
+    user = next((u for u in usuarios if u.id == id), None)
+    if user is None:
         return jsonify({"erro": "Usuário não encontrado."}), 404
 
     dados = request.get_json()
-    user = usuarios[id]
     
     if "id" in dados:
         user.id = dados["id"]
@@ -53,7 +54,7 @@ def putUsersById(id: int):
     if "data_nascimento" in dados:
         user.data_nascimento = dados["data_nascimento"]
 
-    salvar_objeto(CAMINHO_USUARIOS, [user.to_json_user() for user in usuarios])
+    salvar_objeto(CAMINHO_USUARIOS, [u.to_json_user() for u in usuarios])
     return jsonify(user.to_json_user()), 200
 
 
@@ -68,7 +69,7 @@ def postUsers():
         data_nascimento=data.get('data_nascimento')
     )
     usuarios.append(novoUser)
-    salvar_objeto(CAMINHO_USUARIOS, [user.to_json_user() for user in usuarios])
+    salvar_objeto(CAMINHO_USUARIOS, [u.to_json_user() for u in usuarios])
     
     return jsonify(novoUser.to_json_user()), 200
 
@@ -92,9 +93,10 @@ def getInstituicoesEnsino():
 
 @app.get("/instituicoesensino/<int:id>")
 def getInstituicoesEnsinoById(id: int):
-    if id < 0 or id >= len(instituicoesEnsino):
+    inst = next((i for i in instituicoesEnsino if i.codigo == id), None)
+    if inst is None:
         return jsonify({"erro": "Instituição não encontrada"}), 404
-    ieDict = instituicoesEnsino[id].to_json()
+    ieDict = inst.to_json()
     return jsonify(ieDict), 200
 
 
@@ -118,7 +120,8 @@ def postInstituicoes():
 
 @app.put("/instituicoesensino/<int:id>")
 def putInstituicoesensino(id: int):
-    if id < 0 >= len(instituicoesEnsino):
+    id_inst = next((i for i in instituicoesEnsino if i.codigo == id), None)
+    if id_inst is None:
         return jsonify({"erro": "Instituição não encontrada"}), 404
     dados = request.get_json()
     inst = instituicoesEnsino[id]
@@ -134,9 +137,10 @@ def putInstituicoesensino(id: int):
     return jsonify(inst.to_json()), 200
 
 
-@app.delete("/instituicoes/<int:id>")
+@app.delete("/instituicoesensino/<int:id>")
 def deleteInstituicoes(id: int):
-    if id < 0 or id <= len(instituicoesEnsino):
+    inst = next((i for i in instituicoesEnsino if i.codigo == id), None)
+    if inst is None:
         return jsonify({"erro": "Instituição não encontrada"}), 404
     deletada = instituicoesEnsino.pop(id)
     salvar_objeto(CAMINHO_INSTITUICOES, [i.to_json() for i in instituicoesEnsino])
