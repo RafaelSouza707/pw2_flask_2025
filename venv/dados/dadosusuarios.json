@@ -1,0 +1,14 @@
+[
+    {
+        "id": 2,
+        "nome": "Moura",
+        "cpf": "555666777888800",
+        "data_nascimento": "2001_06_07"
+    },
+    {
+        "id": 3,
+        "nome": "Souza",
+        "cpf": "00011100011100",
+        "data_nascimento": "1999_05_22"
+    }
+]
