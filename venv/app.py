@@ -4,6 +4,7 @@ from models.CarregarInstituicao import carregarInstituicao
 from models.CarregarUsuarios import carregarUsuarios 
 from models.Usuario import Usuario
 from models.SalvarObjeto import salvar_objeto
+import sqlite3
 
 app = Flask(__name__)
 
@@ -22,12 +23,25 @@ def index():
 
 
 # === Start Users ===
+"""
 @app.get("/usuarios")
 def getUsuarios():
     lista_usuarios = [user.to_json_user() for user in usuarios]
     return lista_usuarios, 200
+"""
+@app.get("/usuarios")
+def getUsuarios():
+    conn = sqlite3.connect("censoescolar.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nome, cpf, nascimento FROM tb_usuario")
+    usuarios = [
+        {"id": l[0], "nome": l[1], "cpf": l[2], "nascimento": l[3]}
+        for l in cursor.fetchall()
+    ]
+    conn.close()
+    return jsonify(usuarios), 200
 
-
+"""
 @app.get("/usuarios/<int:id>")
 def getUsuariosById(id: int):
     user = next((u for u in usuarios if u.id == id), None)
@@ -35,6 +49,23 @@ def getUsuariosById(id: int):
         return jsonify({"erro": "Usuário não encontrado."}), 404
     listUsersById = usuarios[id].to_json_user()
     return jsonify(listUsersById), 200
+"""
+
+@app.get("/usuarios/<int:id>")
+def getUsuariosById(id: int):
+    conn = sqlite3.connect("censoescolar.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT id, nome, cpf, nascimento FROM tb_usuario WHERE id = ?", (id,)
+    )
+    linha = cursor.fetchone()
+    conn.close()
+
+    if linha is None:
+        return jsonify({"erro": "Usuário não encontrado."}), 404
+    
+    user = {"id": linha[0], "nome": linha[1], "cpf": linha[2], "nascimento": linha[3]}
+    return jsonify(user), 200
 
 
 @app.put("/usuarios/<int:id>")
@@ -51,8 +82,8 @@ def putUsersById(id: int):
         user.nome = dados["nome"]
     if "cpf" in dados:
         user.cpf = dados["cpf"]
-    if "data_nascimento" in dados:
-        user.data_nascimento = dados["data_nascimento"]
+    if "nascimento" in dados:
+        user.nascimento = dados["nascimento"]
 
     salvar_objeto(CAMINHO_USUARIOS, [u.to_json_user() for u in usuarios])
     return jsonify(user.to_json_user()), 200
@@ -66,7 +97,7 @@ def postUsers():
         id=data.get('id'),
         nome=data.get('nome'),
         cpf=data.get('cpf'),
-        data_nascimento=data.get('data_nascimento')
+        nascimento=data.get('nascimento')
     )
     usuarios.append(novoUser)
     salvar_objeto(CAMINHO_USUARIOS, [u.to_json_user() for u in usuarios])
@@ -85,12 +116,27 @@ def deleteUsers(id: int):
 # === End Users ===
 
 # Start Instituições
+"""
 @app.get("/instituicoesensino") 
 def getInstituicoesEnsino():
     lista_serial = [inst.to_json() for inst in instituicoesEnsino]
     return lista_serial, 200
+"""
+
+@app.get("/instituicoesensino")
+def getInstituicoesEnsino():
+    conn = sqlite3.connect("censoescolar.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, codigo, nome, co_uf, co_municipio, qt_mat_bas, qt_mat_prof, qt_mat_esp FROM tb_instituicao")
+    instituicoesEnsino = [
+        {"id": i[0], "codigo": i[1], "nome": i[2], "co_uf": i[3], "co_municipio": i[4], "qt_mat_bas": i[5], "qt_mat_prof": i[6], "qt_mat_esp": i[7]}
+        for i in cursor.fetchall()
+    ]
+    conn.close()
+    return jsonify(instituicoesEnsino), 200
 
 
+"""
 @app.get("/instituicoesensino/<int:id>")
 def getInstituicoesEnsinoById(id: int):
     inst = next((i for i in instituicoesEnsino if i.codigo == id), None)
@@ -98,6 +144,21 @@ def getInstituicoesEnsinoById(id: int):
         return jsonify({"erro": "Instituição não encontrada"}), 404
     ieDict = inst.to_json()
     return jsonify(ieDict), 200
+"""
+@app.get("/instituicoesensino/<int:id>")
+def getInstituicoesEnsinoById(id: int):
+    conn = sqlite3.connect("censoescolar.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, codigo, nome, co_uf, co_municipio, qt_mat_bas, qt_mat_prof, qt_mat_esp FROM tb_instituicao WHERE codigo = ?", (id,))
+    linha = cursor.fetchone()
+    conn.close()
+
+    if linha is None:
+        return jsonify({"erro": "Instituição não encontrada"}), 404
+    
+    instituicao = {"id": linha[0], "codigo": linha[1], "nome": linha[2], "co_uf": linha[3], "co_municipio": linha[4], "qt_mat_bas": linha[5], "qt_mat_prof": linha[6], "qt_mat_esp": linha[7]}
+    return jsonify(instituicao), 200
+
 
 
 @app.post("/instituicoesensino")

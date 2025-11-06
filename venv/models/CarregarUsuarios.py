@@ -14,7 +14,7 @@ def carregarUsuarios(CAMINHO_USUARIOS):
                 id=item.get("id"),
                 nome=item.get("nome"),
                 cpf=item.get("cpf"),
-                data_nascimento=item.get("data_nascimento")
+                nascimento=item.get("nascimento")
             )
         )
     return usuarios

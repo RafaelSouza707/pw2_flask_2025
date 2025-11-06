@@ -1,10 +1,10 @@
 class Usuario():
     
-    def __init__(self, id, nome, cpf, data_nascimento):
+    def __init__(self, id, nome, cpf, nascimento):
         self.id = id
         self.nome = nome
         self.cpf = cpf
-        self.data_nascimento = data_nascimento
+        self.nascimento = nascimento
     
     def __repr__(self):
         return ''
@@ -14,6 +14,6 @@ class Usuario():
             "id": self.id,
             "nome": self.nome,
             "cpf": self.cpf,
-            "data_nascimento": self.data_nascimento
+            "nascimento": self.nascimento
         }
     
