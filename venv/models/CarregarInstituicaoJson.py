@@ -1,14 +1,14 @@
-from models.InstituicaoEnsino import InstituicaoEnsino
+from models.InstituicaoEnsinoJson import InstituicaoEnsinoJson
 import json 
 
-def carregarInstituicao(CAMINHO_INSTITUICOES):
+def carregarInstituicaoJson(CAMINHO_INSTITUICOES):
     with open(CAMINHO_INSTITUICOES, "r", encoding="utf-8") as f:
         dados = json.load(f)
 
     instituicoes = []
     for item in dados:
         instituicoes.append(
-            InstituicaoEnsino(
+            InstituicaoEnsinoJson(
                 codigo=item.get("codigo"),
                 nome=item.get("nome"),
                 co_uf=item.get("co_uf"),

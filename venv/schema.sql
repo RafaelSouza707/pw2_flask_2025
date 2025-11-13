@@ -9,6 +9,24 @@ CREATE TABLE IF NOT EXISTS tb_instituicao (
         qt_mat_esp INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS tb_instituicao_csv (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        codigo TEXT NOT NULL,
+        nome TEXT NOT NULL,
+        co_uf INTEGER NOT NULL,
+        co_municipio INTEGER NOT NULL,
+        qt_mat_bas INTEGER NOT NULL,
+        qt_mat_prof INTEGER NOT NULL,
+        qt_mat_eja INTEGER NOT NULL,
+        qt_mat_esp INTEGER NOT NULL,
+        qt_mat_fund INTEGER NOT NULL,
+        qt_mat_inf INTEGER NOT NULL,
+        qt_mat_med INTEGER NOT NULL,
+        qt_mat_zr_na INTEGER NOT NULL,
+        qt_mat_zr_rur INTEGER NOT NULL,
+        qt_mat_zr_urb INTEGER NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS tb_usuario (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,

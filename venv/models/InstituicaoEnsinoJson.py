@@ -1,5 +1,4 @@
-class InstituicaoEnsino():
-
+class InstituicaoEnsinoJson():
     def __init__(self, codigo, nome, co_uf, co_municipio, qt_mat_bas, qt_mat_prof, qt_mat_eja, qt_mat_esp):
         self.codigo = codigo
         self.nome = nome
